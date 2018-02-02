@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- sqlSession 이 찾아올 수 있는 첫번째 주소 이름 -->
+<mapper namespace="board">
+
+	<!-- DB에서 꺼내오는형태와 설계해놓은 vo 와 변수명 형식이 다를때 맞추기위해서 resultMap을 사용한다 -->
+	<!-- DB 설계자와 DAO 설계자가 다를때 자주 발생하는 문제 -->
+	<!-- 
+	사용예)
+	<resultMap type="com.javaex.vo.EmaillistVO" id="resultMapList">
+	<result column="no" property="no" />
+	<result column="first_name" property="firstName" />
+	<result column="first_name" property="firstName" />
+	<result column="last_name" property="lastName" />
+	<result column="email" property="email" />
+	</resultMap>
+	
+	<select id="getList" resultType="resultMapList"> 타입에 위 아이디값을 적어준다
+		<![CDATA[
+
+		]]>	
+	</select>
+	-->
+	
+	<!-- 쿼리의 끝과 시작을 <>태그로 인식하기 때문에 쿼리중에 특수문자<> 가 들어가면 오류가 날수있다 때문에 쿼리를 작성 할때 [CDATA[  ]] 를 사용하여 쿼리시작끝이 아닌 쿼리에 필요한 문자열이라고 정의 해준다 -->
+	<!-- sqlSession 이 찾아올 수 있는 두번째 주소 이름 -->
+	<!-- 쿼리 끝에 ; 세미콜론을 사용하지 않는다. -->
+	
+	<select id="selectPageList" parameterType="Map" resultType="BoardVO">
+		<![CDATA[
+			select rn,
+				   no,
+				   title,
+				   reg_date regDate,
+				   hit,
+				   user_no,
+				   name
+			from
+				(select rownum rn,
+						no,
+						title,
+						reg_date,
+						hit,
+						user_no,
+						name
+				 from
+					 (select b.no,
+							 b.title,
+							 to_char(b.reg_date, 'YYYY-MM-DD HH24:MI') reg_date,
+							 b.hit,
+							 b.user_no,
+							 u.name
+					  from users u, board b
+					  where u.no = b.user_no
+					  order by reg_date desc, no desc))
+			 where rn>#{min} and rn<=#{max} 
+		]]>	
+	</select>
+	
+	<!-- 
+	<insert id="insert" parameterType="GuestBookVO">
+		<![CDATA[
+			insert into guestbook
+			values (seq_guestbook_no.nextval, #{name}, #{password}, #{content}, sysdate)
+		]]>
+	</insert>
+	
+	<delete id="delete" parameterType="Map">
+		<![CDATA[
+			delete from guestbook
+			where no = #{no} and password = #{password}
+		]]>
+	</delete>
+	 -->
+</mapper>

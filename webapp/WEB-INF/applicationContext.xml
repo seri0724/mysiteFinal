@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+        http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo-1.1.xsd
+        http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring
+        http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring/ehcache-spring-1.1.xsd
+        http://www.springframework.org/schema/task
+        http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+
+
+	<!-- applicationContext.xml 는  스프링 컨테이너가 autowired 어노테이션을 사용하기 위한 패키지들을 정의한 파일-->
+
+	<context:annotation-config />
+
+	<context:component-scan base-package="com.javaex"><!-- 이패키지안을 스캔 해라 -->
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Repository" /> <!-- DAO -->
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Service" /> <!-- 비지니스 로직 -->
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Component" /> <!-- Util -->
+	</context:component-scan>
+
+	<!-- 동시에 발생하는 여러개 요청에 대비해서 DB 에 접근 하는 DAO가 사용 할 커넥션 객체를 미리 여러개 만들어 두고 끊지 않은채 "유지" 시켜두어 필요할 때 바로사용하여 속도향상을 시켜주는 객체 -->
+	<!-- oracle datasource -->
+	<bean id="oracleDatasource" class="oracle.jdbc.pool.OracleDataSource" destroy-method="close">
+		<property name="URL" value="jdbc:oracle:thin:@localhost:1521:xe" />
+		<property name="user" value="webdb" />
+		<property name="password" value="webdb" />
+		<property name="connectionCachingEnabled" value="true" />
+		<qualifier value="main-db" />
+	</bean>
+	
+	<!-- DB에 입력할 쿼리문 이외에 DAO에 불필요하게 중복 되는 코드들을 줄여주는 프로그램 MyBatis-->
+	<!-- MyBatis SqlSessionFactoryBean  설정-->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="oracleDatasource" />
+		<property name="configLocation" value="classpath:mybatis/configuration.xml" />
+	</bean>
+	<!-- MyBatis SqlSessionTemplate  설정-->
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>
+	
+
+</beans>

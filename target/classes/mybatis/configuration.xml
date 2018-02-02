@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<!-- 참조자료형(객체)을 사용해서 쿼리를 손쉽게 작성 할 수 있는 대신 쿼리를 생성할때 필요한 vo가 무엇들이 있는지 정의 해주어야한다.  -->
+	<typeAliases>
+		<typeAlias alias="BoardVO" type="com.javaex.vo.BoardVO" />
+    </typeAliases>
+    
+    <!-- 사용할 쿼리가 적혀있는 페이지 위치를 세팅 -->
+	<mappers>
+		<mapper resource="mybatis/mappers/board.xml" />
+	</mappers>
+</configuration>

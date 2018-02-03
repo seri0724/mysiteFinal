@@ -19,22 +19,21 @@
 			<div id="content">
 				<div id="user">
 	
-					<form id="join-form" name="joinForm" method="get" action="${pageContext.request.contextPath}/user">
-					<input type="hidden" name="a" value="modify">
+					<form id="join-form" name="joinForm" method="get" action="${pageContext.request.contextPath}/user/modify">
 						
 						<label class="block-label" for="name">이름</label>
-						<input id="name" name="name" type="text" value="${requestScope.vo.no }" />
+						<input id="name" name="name" type="text" value="${sessionScope.authUser.name }" />
 	
 						<label class="block-label" for="email">이메일</label>
-						<strong>${requestScope.vo.email }</strong>
+						<strong>${requestScope.uvo.email }</strong>
 						
 						<label class="block-label">패스워드</label>
-						<input name="password" type="password" value="${requestScope.vo.password }" />
+						<input name="password" type="password" value="" />
 						
 						<fieldset>
 							<legend>성별</legend>
 							<c:choose>
-								<c:when test="${requestScope.vo.gender == 'male' }">
+								<c:when test="${requestScope.uvo.gender == 'male' }">
 									<label>여</label> <input type="radio" name="gender" value="female" >
 									<label>남</label> <input type="radio" name="gender" value="male" checked="checked">
 								</c:when>

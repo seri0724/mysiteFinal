@@ -1,6 +1,6 @@
 package com.javaex.vo;
 
-public class GuestBookVO {
+public class GuestBookVo {
 
 	private int no;
 	private String name;
@@ -8,20 +8,16 @@ public class GuestBookVO {
 	private String content;
 	private String regDate;
 	
-	public GuestBookVO() {
+	public GuestBookVo() {
 		// TODO Auto-generated constructor stub
 	}
-	
-	
 
-	public GuestBookVO(String name, String password, String content) {
+	public GuestBookVo(String name, String password, String content) {
 		super();
 		this.name = name;
 		this.password = password;
 		this.content = content;
 	}
-
-
 
 	public int getNo() {
 		return no;

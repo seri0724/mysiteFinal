@@ -20,8 +20,7 @@
 			<div id="content">
 				<div id="user">
 	
-					<form id="join-form" name="joinForm" method="get" action="user">
-						<input type="hidden" name="a" value="join">
+					<form id="join-form" name="joinForm" method="get" action="${pageContext.request.contextPath}/user/join">
 						<label class="block-label" for="name">이름</label>
 						<input id="name" name="name" type="text" value="">
 	

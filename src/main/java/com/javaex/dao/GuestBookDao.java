@@ -10,26 +10,25 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.javaex.vo.UserVO;
+import com.javaex.vo.GuestBookVo;
 
 @Repository
-public class UserDAO {
+public class GuestBookDao {
 
 	Connection conn = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
 	
-	public void insert(UserVO vo) {
+	public void insertGuestBook(GuestBookVo vo) {
 		// 0. import java.sql.*;
 		connect();
 		try {
 			// 3. SQL문 준비 / 바인딩 / 실행
-			String query = "insert into users values(seq_users_no.nextval, ? , ? , ? , ?)"; 
+			String query = "insert into guestbook values(seq_guestbook_no.nextval, ? , ? , ? ,  sysdate)"; 
 			pstmt = conn.prepareStatement(query); 
 			pstmt.setString(1, vo.getName()); 
-			pstmt.setString(2, vo.getEmail());
-			pstmt.setString(3, vo.getPassword());
-			pstmt.setString(4, vo.getGender());
+			pstmt.setString(2, vo.getPassword());
+			pstmt.setString(3, vo.getContent());
 			int result = pstmt.executeUpdate();
 			
 			// 4.결과처리
@@ -42,32 +41,32 @@ public class UserDAO {
 		}
 	}
 
-	public List<UserVO> selectAll() {
+	public List<GuestBookVo> selectAllGuestBook() {
 		// 0. import java.sql.*;
 		connect();
-		List<UserVO> l = new ArrayList<UserVO>();
+		List<GuestBookVo> l = new ArrayList<GuestBookVo>();
 		try {
 			// 3. SQL문 준비 / 바인딩 / 실행
-			String query = "select no ,name, email, password, gender from users";
+			String query = "select no,name,content,reg_date from guestbook order by reg_date desc, no desc ";
 			pstmt = conn.prepareStatement(query);
 			rs = pstmt.executeQuery();
 			
+			
 			// 4.결과처리
 			while(rs.next()) {
-				UserVO vo = new UserVO();
+				GuestBookVo vo = new GuestBookVo();
 				int no = rs.getInt("no");
 				String name = rs.getString("name");
-				String email = rs.getString("email");
-				String password = rs.getString("password");
-				String gender = rs.getString("gender");
+				String content = rs.getString("content");
+				String regDate = rs.getString("reg_date");
 				
 				vo.setNo(no);
 				vo.setName(name);
-				vo.setEmail(email);
-				vo.setPassword(password);
-				vo.setGender(gender);
+				vo.setContent(content);
+				vo.setDate(regDate);
 				l.add(vo);
 			}
+			
 			
 		} catch (SQLException e) {
 			System.out.println("error:" + e);
@@ -77,97 +76,55 @@ public class UserDAO {
 		return l;
 	}
 	
-	public UserVO select(String getEmail, String getPassword) {
+	public GuestBookVo selectGuestBook(int getno) {
 		// 0. import java.sql.*;
 		connect();
-		UserVO vo = null;
+		GuestBookVo vo=null;
 		try {
 			// 3. SQL문 준비 / 바인딩 / 실행
-			String query = "select no , name, gender from users where email = ? and password = ?";
-			pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, getEmail);
-			pstmt.setString(2, getPassword);
-			rs = pstmt.executeQuery();
-			
-			
-			// 4.결과처리
-			while(rs.next()) {
-				vo = new UserVO();
-				int no = rs.getInt("no");
-				String name = rs.getString("name");
-				String gender = rs.getString("gender");
-				
-				vo.setNo(no);
-				vo.setName(name);
-				vo.setEmail(getEmail);
-				vo.setPassword(getPassword);
-				vo.setGender(gender);
-				
-			}
-				
-		} catch (SQLException e) {
-			System.out.println("error:" + e);
-		} finally {
-			close();
-		}
-
-		return vo;
-	}
-	
-	public UserVO select(int getno) {
-		// 0. import java.sql.*;
-		connect();
-		UserVO vo = null;
-		try {
-			// 3. SQL문 준비 / 바인딩 / 실행
-			String query = "select name, email, password, gender from users where no = ?";
+			String query = "select no,name,content,reg_date from guestbook where no = ?";
 			pstmt = conn.prepareStatement(query);
 			pstmt.setInt(1, getno);
 			rs = pstmt.executeQuery();
 			
-			
 			// 4.결과처리
 			while(rs.next()) {
-				vo = new UserVO();
+				vo = new GuestBookVo();
+				int no = rs.getInt("no");
 				String name = rs.getString("name");
-				String email = rs.getString("email");
-				String password = rs.getString("password");
-				String gender = rs.getString("gender");
+				String content = rs.getString("content");
+				String regDate = rs.getString("reg_date");
 				
-				vo.setNo(getno);
+				vo.setNo(no);
 				vo.setName(name);
-				vo.setEmail(email);
-				vo.setPassword(password);
-				vo.setGender(gender);
-				
+				vo.setContent(content);
+				vo.setDate(regDate);
 			}
-				
+			
 		} catch (SQLException e) {
 			System.out.println("error:" + e);
 		} finally {
 			close();
 		}
-
 		return vo;
 	}
 	
 	
-	public void update(UserVO vo) {
+	public void updateGuestBook(GuestBookVo avo) {
 		// 0. import java.sql.*;
 		connect();
 		try {
 			// 3. SQL문 준비 / 바인딩 / 실행
-			String query = "update users set name = ? , password = ? , gender = ? where no = ? ";
+			String query = "update guestbook set name = ? , password = ? , content = ? , reg_date = sysdate where no = ? ";
 			pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, vo.getName());
-			pstmt.setString(2, vo.getPassword());
-			pstmt.setString(3, vo.getGender());
-			pstmt.setInt(4, vo.getNo());
+			pstmt.setString(1, avo.getName());
+			pstmt.setString(2, avo.getPassword());
+			pstmt.setString(3, avo.getContent());
+			pstmt.setInt(4, avo.getNo());
 			int result = pstmt.executeUpdate();
 			
 			// 4.결과처리
 			System.out.println("처리 결과 : " + result);
-			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			System.out.println("error:" + e);
@@ -177,13 +134,13 @@ public class UserDAO {
 	}
 	
 	
-	public int delete(int no ,String pw) {
+	public int deleteGuestBook(int no ,String pw) {
 		// 0. import java.sql.*;
 		connect();
 		int result=0;
 		try {
 			// 3. SQL문 준비 / 바인딩 / 실행
-			String query = "delete from users where no = ? and password = ?";
+			String query = "delete from guestbook where no = ? and password = ?";
 			pstmt = conn.prepareStatement(query); 
 			pstmt.setInt(1, no);
 			pstmt.setString(2, pw);
@@ -192,13 +149,12 @@ public class UserDAO {
 			// 4.결과처리	
 			System.out.println("처리 결과 : " + result);
 			
-			
+
 		} catch (SQLException e) {
 			System.out.println("error:" + e);
 		} finally {
 			close();
 		}
-		
 		return result;
 	}
 	

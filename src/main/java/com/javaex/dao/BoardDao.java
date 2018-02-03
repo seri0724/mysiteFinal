@@ -14,10 +14,10 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.javaex.vo.BoardVO;
+import com.javaex.vo.BoardVo;
 
 @Repository
-public class BoardDAO {
+public class BoardDao {
 	
 	Connection conn = null;
 	PreparedStatement pstmt = null;
@@ -26,7 +26,7 @@ public class BoardDAO {
 	@Autowired
 	SqlSession sqlSession;
 	
-	public void insert(BoardVO vo) {
+	public void insert(BoardVo vo) {
 		// 0. import java.sql.*;
 		connect();
 		try {
@@ -49,7 +49,7 @@ public class BoardDAO {
 	}
 	
 	
-	public void update(BoardVO vo) {
+	public void update(BoardVo vo) {
 		// 0. import java.sql.*;
 		connect();
 		try {
@@ -120,10 +120,10 @@ public class BoardDAO {
 	
 	
 	//view.jsp 를 위한 게시물 검색
-	public BoardVO select(int getno) {
+	public BoardVo select(int getno) {
 		// 0. import java.sql.*;
 		connect();
-		BoardVO vo = null;
+		BoardVo vo = null;
 		try {
 			// 3. SQL문 준비 / 바인딩 / 실행
 			String query = "select b.title " +
@@ -138,7 +138,7 @@ public class BoardDAO {
 			
 			// 4.결과처리
 			while(rs.next()) {
-				vo = new BoardVO();
+				vo = new BoardVo();
 				String title = rs.getString("title");
 				String content = rs.getString("content");
 				int userNo = rs.getInt("user_no");
@@ -161,11 +161,11 @@ public class BoardDAO {
 	
 	//0)
 	//list.jsp를 위한 게시물 리스트 검색
-	public List<BoardVO> selectPageList(int min,int max) {
+	public List<BoardVo> selectPageList(int min,int max) {
 		Map<String,Integer> map = new HashMap<String,Integer>();
 		map.put("min", min);
 		map.put("max", max);
-		List<BoardVO> l = sqlSession.selectList("board.selectPageList",map);
+		List<BoardVo> l = sqlSession.selectList("board.selectPageList",map);
 		return l;
 	}
 	
@@ -198,10 +198,10 @@ public class BoardDAO {
 	
 	//1)
 	//제목으로 검색
-	public List<BoardVO> t_SearchList(int min, int max, String keyWord) {
+	public List<BoardVo> t_SearchList(int min, int max, String keyWord) {
 		// 0. import java.sql.*;
 		connect();
-		List<BoardVO> l = new ArrayList<BoardVO>();
+		List<BoardVo> l = new ArrayList<BoardVo>();
 		try {
 			// 3. SQL문 준비 / 바인딩 / 실행
 			String query = "select rn "+
@@ -239,7 +239,7 @@ public class BoardDAO {
 			
 			// 4.결과처리
 			while(rs.next()) {
-				BoardVO vo = new BoardVO();
+				BoardVo vo = new BoardVo();
 				int no = rs.getInt("no");
 				String title = rs.getString("title");
 				String regDate = rs.getString("reg_date");
@@ -293,10 +293,10 @@ public class BoardDAO {
 	
 	//2)
 	//제목+내용으로 검색
-	public List<BoardVO> tc_SearchList(int min, int max, String keyWord) {
+	public List<BoardVo> tc_SearchList(int min, int max, String keyWord) {
 		// 0. import java.sql.*;
 		connect();
-		List<BoardVO> l = new ArrayList<BoardVO>();
+		List<BoardVo> l = new ArrayList<BoardVo>();
 		try {
 			// 3. SQL문 준비 / 바인딩 / 실행
 			String query = "select rn "+
@@ -335,7 +335,7 @@ public class BoardDAO {
 			
 			// 4.결과처리
 			while(rs.next()) {
-				BoardVO vo = new BoardVO();
+				BoardVo vo = new BoardVo();
 				int no = rs.getInt("no");
 				String title = rs.getString("title");
 				String regDate = rs.getString("reg_date");
@@ -390,10 +390,10 @@ public class BoardDAO {
 	
 	//3))
 	//작성자명으로 검색
-	public List<BoardVO> un_SearchList(int min, int max, String keyWord) {
+	public List<BoardVo> un_SearchList(int min, int max, String keyWord) {
 		// 0. import java.sql.*;
 		connect();
-		List<BoardVO> l = new ArrayList<BoardVO>();
+		List<BoardVo> l = new ArrayList<BoardVo>();
 		try {
 			// 3. SQL문 준비 / 바인딩 / 실행
 			String query = "select rn "+
@@ -431,7 +431,7 @@ public class BoardDAO {
 			
 			// 4.결과처리
 			while(rs.next()) {
-				BoardVO vo = new BoardVO();
+				BoardVo vo = new BoardVo();
 				int no = rs.getInt("no");
 				String title = rs.getString("title");
 				String regDate = rs.getString("reg_date");

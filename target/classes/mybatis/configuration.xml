@@ -4,11 +4,15 @@
 
 	<!-- 참조자료형(객체)을 사용해서 쿼리를 손쉽게 작성 할 수 있는 대신 쿼리를 생성할때 필요한 vo가 무엇들이 있는지 정의 해주어야한다.  -->
 	<typeAliases>
-		<typeAlias alias="BoardVO" type="com.javaex.vo.BoardVO" />
+		<typeAlias alias="BoardVo" type="com.javaex.vo.BoardVo" />
+		<typeAlias alias="UserVo" type="com.javaex.vo.UserVo" />
+		<typeAlias alias="GuestBookVo" type="com.javaex.vo.GuestBookVo" />
     </typeAliases>
     
     <!-- 사용할 쿼리가 적혀있는 페이지 위치를 세팅 -->
 	<mappers>
 		<mapper resource="mybatis/mappers/board.xml" />
+		<mapper resource="mybatis/mappers/user.xml" />
+		<mapper resource="mybatis/mappers/guestbook.xml" />
 	</mappers>
 </configuration>

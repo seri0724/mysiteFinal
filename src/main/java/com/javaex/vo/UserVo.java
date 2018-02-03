@@ -1,19 +1,18 @@
 package com.javaex.vo;
 
-public class UserVO {
+public class UserVo {
+	
 	private int no;
 	private String name;
 	private String email;
 	private String password;
 	private String gender;
 	
-	public UserVO() {
+	public UserVo() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	
-
-	public UserVO(int no, String name, String email, String password, String gender) {
+	public UserVo(int no, String name, String email, String password, String gender) {
 		super();
 		this.no = no;
 		this.name = name;
@@ -21,8 +20,6 @@ public class UserVO {
 		this.password = password;
 		this.gender = gender;
 	}
-
-
 
 	public int getNo() {
 		return no;
@@ -69,8 +66,5 @@ public class UserVO {
 		return "UserVO [no=" + no + ", name=" + name + ", email=" + email + ", password=" + password + ", gender="
 				+ gender + "]";
 	}
-	
-
-	
 	
 }

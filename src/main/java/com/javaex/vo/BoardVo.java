@@ -1,6 +1,6 @@
 package com.javaex.vo;
 
-public class BoardVO {
+public class BoardVo {
 
 	private int no;
 	private String title;
@@ -13,13 +13,11 @@ public class BoardVO {
 	private String password;
 	private String gender;
 	
-	public BoardVO() {
+	public BoardVo() {
 		// TODO Auto-generated constructor stub
 	}
-	
-	
 
-	public BoardVO(int no, String title, String content, String regDate, int hit, int userNo) {
+	public BoardVo(int no, String title, String content, String regDate, int hit, int userNo) {
 		super();
 		this.no = no;
 		this.title = title;
@@ -28,9 +26,7 @@ public class BoardVO {
 		this.hit = hit;
 		this.userNo = userNo;
 	}
-
-
-
+	
 	public int getNo() {
 		return no;
 	}

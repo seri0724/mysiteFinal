@@ -8,14 +8,14 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.javaex.dao.BoardDAO;
-import com.javaex.vo.BoardVO;
+import com.javaex.dao.BoardDao;
+import com.javaex.vo.BoardVo;
 
 @Service
 public class BoardService {
 	
 	@Autowired
-	BoardDAO dao;
+	BoardDao boardDao;
 
 	public Map list(int sp, String kwd, String st) {
 		// TODO Auto-generated method stub
@@ -45,14 +45,14 @@ public class BoardService {
 		//DB 검색결과 게시물 개수를 담을 변수 선언
 		int boardCount;	
 		//DB 검색결과 게시물 리스트를 담을 변수 선언
-		List<BoardVO> l ;
+		List<BoardVo> l ;
 		
 		//DAO 객체를 이용해서 사용자가 클릭한 페이지에 해당하는 게시물들을 가져온다
 		//만약 2페이지를 누르면 11번~20번까지 게시물을 가져와야 하기때문에 (사용자가 선택한 페이지 번호에서 -1)을 한다.
 		if(keyWord.equals("")) {
-			boardCount = dao.boardCount();
+			boardCount = boardDao.boardCount();
 			System.out.println("전체 게시물 수 : " + boardCount);
-			l = dao.selectPageList((selectPage-1)*pageSize,selectPage*pageSize); 
+			l = boardDao.selectPageList((selectPage-1)*pageSize,selectPage*pageSize); 
 		}else {
 			String copyKeyWord = keyWord; //키워드 가공을 위한 복사
 			copyKeyWord.replace(" ", "%"); //띄어 쓰기 한곳을 전부 %로 변경
@@ -60,29 +60,29 @@ public class BoardService {
 			if(searchType==null) {
 				System.out.println("검색 타입이 없습니다.");
 				boardCount = 0;
-				l = new ArrayList<BoardVO>();
+				l = new ArrayList<BoardVo>();
 			}else if(searchType.equals("title")) {
 				System.out.println("검색 타입 : 제목");
 				System.out.println("키워드 확인 : " + copyKeyWord);
-				boardCount = dao.t_SearchBoardCount(copyKeyWord);
+				boardCount = boardDao.t_SearchBoardCount(copyKeyWord);
 				System.out.println("키워드 검색 일치 게시물 수 : " + boardCount);
-				l = dao.t_SearchList((selectPage-1)*pageSize,selectPage*pageSize,copyKeyWord);
+				l = boardDao.t_SearchList((selectPage-1)*pageSize,selectPage*pageSize,copyKeyWord);
 			}else if(searchType.equals("title,content")) {
 				System.out.println("검색 타입 : 제목+내용");
 				System.out.println("키워드 확인 : " + copyKeyWord);
-				boardCount = dao.tc_SearchBoardCount(copyKeyWord);
+				boardCount = boardDao.tc_SearchBoardCount(copyKeyWord);
 				System.out.println("키워드 검색 일치 게시물 수 : " + boardCount);
-				l = dao.tc_SearchList((selectPage-1)*pageSize,selectPage*pageSize,copyKeyWord);
+				l = boardDao.tc_SearchList((selectPage-1)*pageSize,selectPage*pageSize,copyKeyWord);
 			}else if(searchType.equals("username")) {
 				System.out.println("검색 타입 : 작성자명");
 				System.out.println("키워드 확인 : " + copyKeyWord);
-				boardCount = dao.un_SearchBoardCount(copyKeyWord);
+				boardCount = boardDao.un_SearchBoardCount(copyKeyWord);
 				System.out.println("키워드 검색 일치 게시물 수 : " + boardCount);
-				l = dao.un_SearchList((selectPage-1)*pageSize,selectPage*pageSize,copyKeyWord);
+				l = boardDao.un_SearchList((selectPage-1)*pageSize,selectPage*pageSize,copyKeyWord);
 			}else {
 				System.out.println("잘못된 검색 타입 입니다.");
 				boardCount = 0;
-				l = new ArrayList<BoardVO>();
+				l = new ArrayList<BoardVo>();
 			}
 		}
 		//DB 검색 결과로 얻은 게시물 개수를 이용하여 몇페이지를 만들수 있는지 계산

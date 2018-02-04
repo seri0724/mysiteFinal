@@ -18,9 +18,7 @@
 			<div id="board">
 			<!-- get 방식일때는 action 에 집어넣은 파라미터 값이 무시된다 -->
 			<!-- post 방식일때는 action 과 form 둘다 받을 수 있지만 같은 변수명이있다면 action 에 있는 값만 존재하게 된다. -->
-				<form class="board-form" method="post" action="${pageContext.request.contextPath}/board">   
-					<input type = "hidden" name = "a" value="writing">
-					<input type = "hidden" name = "name" value="">
+				<form class="board-form" method="post" action="${pageContext.request.contextPath}/board/writing">   
 					<table class="tbl-ex">
 						<tr>
 							<th colspan="2">글쓰기</th>
@@ -37,7 +35,7 @@
 						</tr>
 					</table>
 					<div class="bottom">
-						<a href="${pageContext.request.contextPath}/board?a=list">취소</a>
+						<a href="${pageContext.request.contextPath}/board/list">취소</a>
 						<input type="submit" value="등록">
 					</div>
 				</form>				

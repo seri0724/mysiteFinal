@@ -16,21 +16,20 @@
 		
 		<div id="content">
 			<div id="board">
-				<form class="board-form" method="post" action="${pageContext.request.contextPath}/board?a=modifying">
-					<input type="hidden" name ="bno" value="${requestScope.bvo.no}">
-					<input type="hidden" name= "buserno" value="${requestScope.bvo.userNo}">
+				<form class="board-form" method="post" action="${pageContext.request.contextPath}/board/modifying">
+					<input type="hidden" name ="bno" value="${param.bno}">
 					<table class="tbl-ex">
 						<tr>
 							<th colspan="2">글수정</th>
 						</tr>
 						<tr>
 							<td class="label">제목</td>
-							<td><input type="text" name="title" value="${requestScope.bvo.title}"></td>
+							<td><input type="text" name="title" value="${param.title}"></td>
 						</tr>
 						<tr>
 							<td class="label">내용</td>
 							<td>
-								<textarea id="content" name="content">${requestScope.bvo.content}</textarea>
+								<textarea id="content" name="content">${param.content}</textarea>
 							</td>
 						</tr>
 					</table>

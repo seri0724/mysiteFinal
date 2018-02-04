@@ -9,6 +9,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.javaex.service.UserService;
@@ -21,13 +22,13 @@ public class UserController {
 	@Autowired
 	UserService userService;
 	
-	@RequestMapping("/joinform")
+	@RequestMapping(value = "/joinform" , method = RequestMethod.GET)
 	public String joinform() {
 		System.out.println("joinform 진입");
 		return "user/joinform";
 	}
 	
-	@RequestMapping("/join")
+	@RequestMapping(value = "/join" , method = RequestMethod.POST)
 	public String join(@RequestParam Map<String,String> map) { //request 파라미터를 맵으로 받아서 그냥 바로 보내버렸다 꿀....핵꿀...
 		System.out.println("join 진입");
 		int result = 0;
@@ -43,25 +44,25 @@ public class UserController {
 		}
 	}
 	
-	@RequestMapping("/joinsuccess")
+	@RequestMapping(value = "/joinsuccess" , method = RequestMethod.GET)
 	public String joinsuccess() {
 		System.out.println("joinsuccess 진입");
 		return "user/joinsuccess";
 	}
 	
-	@RequestMapping("/joinfail")
+	@RequestMapping(value = "/joinfail" , method = RequestMethod.GET)
 	public String joinfail() {
 		System.out.println("joinfail 진입");
 		return "user/joinfail";
 	}
 	
-	@RequestMapping("/loginform")
+	@RequestMapping(value = "/loginform" , method = RequestMethod.GET)
 	public String loginform() {
 		System.out.println("loginform 진입");
 		return "user/loginform";
 	}
 	
-	@RequestMapping("/login")
+	@RequestMapping(value = "/login" , method = RequestMethod.POST)
 	public String login(HttpSession session , @RequestParam Map<String,String> map) {
 		System.out.println("login 진입");
 		System.out.println("로그인 요청 : " + map.get("email") + "/" + map.get("password"));
@@ -79,7 +80,7 @@ public class UserController {
 		}
 	}
 	
-	@RequestMapping("/modifyform")
+	@RequestMapping(value = "/modifyform" , method = RequestMethod.POST)
 	public String modifyform(HttpSession session, Model model) {
 		System.out.println("modifyform 진입");
 		UserVo loginUser = (UserVo) session.getAttribute("authUser");
@@ -94,7 +95,7 @@ public class UserController {
 		}
 	}
 	
-	@RequestMapping("/modify")
+	@RequestMapping(value = "/modify" , method = RequestMethod.POST)
 	public String modify(HttpSession session, @RequestParam Map<String,String> map) {
 		System.out.println("modify 진입");
 		UserVo loginUser = (UserVo) session.getAttribute("authUser");

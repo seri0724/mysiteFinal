@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.javaex.dao.BoardDao;
 import com.javaex.vo.BoardVo;
+import com.javaex.vo.UserVo;
 
 @Service
 public class BoardService {
@@ -17,7 +18,7 @@ public class BoardService {
 	@Autowired
 	BoardDao boardDao;
 
-	public Map list(int sp, String kwd, String st) {
+	public Map<String,Object> list(int sp, String kwd, String st) {
 		// TODO Auto-generated method stub
 		//페이징 세팅 값 2가지
 		//1.
@@ -37,9 +38,6 @@ public class BoardService {
 		System.out.println("keyWord : " + kwd);
 		String searchType = st; //검색 타입을 받아온다.
 		System.out.println("searchType : " + st);
-		if(keyWord==null) { //키워드가 null이면 "" 로 세팅
-			keyWord="";
-		}
 		
 		//--1)DB 검색 시작
 		//DB 검색결과 게시물 개수를 담을 변수 선언
@@ -47,43 +45,44 @@ public class BoardService {
 		//DB 검색결과 게시물 리스트를 담을 변수 선언
 		List<BoardVo> l ;
 		
+		//꺼내와야 하는 게시물 번호 범위
+		int boardMinNum = (selectPage-1)*pageSize;
+		int boardMaxNum = selectPage*pageSize;
+		Map<String,Object> boardSearchOption = new HashMap<String, Object>();
+		boardSearchOption.put("boardMinNum", boardMinNum);
+		boardSearchOption.put("boardMaxNum", boardMaxNum);
+		
 		//DAO 객체를 이용해서 사용자가 클릭한 페이지에 해당하는 게시물들을 가져온다
 		//만약 2페이지를 누르면 11번~20번까지 게시물을 가져와야 하기때문에 (사용자가 선택한 페이지 번호에서 -1)을 한다.
 		if(keyWord.equals("")) {
 			boardCount = boardDao.boardCount();
 			System.out.println("전체 게시물 수 : " + boardCount);
-			l = boardDao.selectPageList((selectPage-1)*pageSize,selectPage*pageSize); 
+			l = boardDao.selectPageList(boardSearchOption);
 		}else {
 			String copyKeyWord = keyWord; //키워드 가공을 위한 복사
 			copyKeyWord.replace(" ", "%"); //띄어 쓰기 한곳을 전부 %로 변경
 			copyKeyWord = "%".concat(keyWord).concat("%"); //DB 검색을 위해서 앞뒤에 %를 붙이도록 변경
-			if(searchType==null) {
-				System.out.println("검색 타입이 없습니다.");
-				boardCount = 0;
-				l = new ArrayList<BoardVo>();
-			}else if(searchType.equals("title")) {
+
+			System.out.println("키워드 확인 : " + copyKeyWord);
+			boardSearchOption.put("keyWord", copyKeyWord);
+			if(searchType.equals("title")) {
 				System.out.println("검색 타입 : 제목");
-				System.out.println("키워드 확인 : " + copyKeyWord);
 				boardCount = boardDao.t_SearchBoardCount(copyKeyWord);
-				System.out.println("키워드 검색 일치 게시물 수 : " + boardCount);
-				l = boardDao.t_SearchList((selectPage-1)*pageSize,selectPage*pageSize,copyKeyWord);
+				l = boardDao.t_SearchBoardList(boardSearchOption);
 			}else if(searchType.equals("title,content")) {
-				System.out.println("검색 타입 : 제목+내용");
-				System.out.println("키워드 확인 : " + copyKeyWord);
+				System.out.println("검색 타입 : 제목+내용");;
 				boardCount = boardDao.tc_SearchBoardCount(copyKeyWord);
-				System.out.println("키워드 검색 일치 게시물 수 : " + boardCount);
-				l = boardDao.tc_SearchList((selectPage-1)*pageSize,selectPage*pageSize,copyKeyWord);
+				l = boardDao.tc_SearchBoardList(boardSearchOption);
 			}else if(searchType.equals("username")) {
 				System.out.println("검색 타입 : 작성자명");
-				System.out.println("키워드 확인 : " + copyKeyWord);
 				boardCount = boardDao.un_SearchBoardCount(copyKeyWord);
-				System.out.println("키워드 검색 일치 게시물 수 : " + boardCount);
-				l = boardDao.un_SearchList((selectPage-1)*pageSize,selectPage*pageSize,copyKeyWord);
+				l = boardDao.un_SearchBoardList(boardSearchOption);
 			}else {
 				System.out.println("잘못된 검색 타입 입니다.");
 				boardCount = 0;
 				l = new ArrayList<BoardVo>();
 			}
+			System.out.println("키워드 검색 일치 게시물 수 : " + boardCount);
 		}
 		//DB 검색 결과로 얻은 게시물 개수를 이용하여 몇페이지를 만들수 있는지 계산
 		int pageCount = ((boardCount-1)/pageSize)+1; // 페이지 총 갯수
@@ -138,19 +137,62 @@ public class BoardService {
 			}
 		}
 		
-		Map<String,Object> map = new HashMap<String,Object>(); 
-		map.put("keyWord", keyWord);
-		map.put("searchType", searchType);
-		map.put("minPage", minPage);
-		map.put("maxPage", maxPage);
-		map.put("showMinPage", showMinPage);
-		map.put("showMaxPage", showMaxPage);
-		map.put("selectPage", selectPage);
-		map.put("movePage", movePage);
-		map.put("pageCount", pageCount);
-		map.put("l", l);
+		Map<String,Object> listPage = new HashMap<String,Object>(); 
+		listPage.put("keyWord", keyWord);
+		listPage.put("searchType", searchType);
+		listPage.put("minPage", minPage);
+		listPage.put("maxPage", maxPage);
+		listPage.put("showMinPage", showMinPage);
+		listPage.put("showMaxPage", showMaxPage);
+		listPage.put("selectPage", selectPage);
+		listPage.put("movePage", movePage);
+		listPage.put("pageCount", pageCount);
+		listPage.put("l", l);
 		
-		return map;
+		return listPage;
+	}
+
+	public BoardVo view(int bno) {
+		int result = boardDao.boardHit(bno);
+		if(result == 1 ) {
+			System.out.println("게시물 조회수 증가 성공");
+		}else {
+			System.out.println("게시물 조회수 증가 실패");
+		}
+		return boardDao.selectByNo(bno);
+	}
+	
+	public int writing(Map<String,String> board) {
+		return boardDao.boardInsert(board);
+	}
+	
+	public int modifying(Map<String,String> board,UserVo loginUser) {
+		int result = 0;
+		int bno = Integer.parseInt(board.get("bno"));
+		BoardVo bvo = boardDao.selectByNo(bno);
+		if(loginUser.getNo()==bvo.getUserNo()) {
+			System.out.println("게시글 작성자와 수정 요청자 일치");
+			System.out.println("게시글 수정 시작");
+			result = boardDao.boardUpdate(board);
+		}else {
+			System.out.println("게시글 작성자와 수정 요청자 불일치");
+			result = -1;
+		}
+		return result;
+	}
+	
+	public int delete(int bno,UserVo loginUser) {
+		int result = 0;
+		BoardVo bvo = boardDao.selectByNo(bno);
+		if(loginUser.getNo()==bvo.getUserNo()) {
+			System.out.println("게시글 작성자와 삭제 요청자 일치");
+			System.out.println("게시글 삭제 시작");
+			result = boardDao.boardDelete(bno);
+		}else {
+			System.out.println("게시글 작성자와 삭제 요청자 불일치");
+			result = -1;
+		}
+		return result;
 	}
 
 }

@@ -34,9 +34,14 @@
 					</tr>
 				</table>
 				<div class="bottom">
-					<a href="${pageContext.request.contextPath}/board?a=list">글목록</a>
+					<a href="${pageContext.request.contextPath}/board/list">글목록</a>
 					<c:if test="${sessionScope.authUser.no == requestScope.bvo.userNo }"> <!-- jstl 로그인 사용자 번호와 게시물 작성자의 번호가 같으면 -->
-						<a href="${pageContext.request.contextPath}/board?a=modify&bno=${requestScope.bvo.no}">글수정</a>
+						<form action = "${pageContext.request.contextPath}/board/modify" method="post">
+							<input type="hidden" name="bno" value="${param.bno}">
+							<input type="hidden" name="title" value="${requestScope.bvo.title}">
+							<input type="hidden" name="content" value="${requestScope.bvo.content}">
+							<input type="submit" value ="글수정" >
+						</form>
 					</c:if>
 				</div>
 			</div>

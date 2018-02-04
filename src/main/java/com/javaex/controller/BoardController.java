@@ -73,16 +73,16 @@ public class BoardController {
 		if(loginUser==null) {
 			System.out.println("강제 writing 진입자 발생");
 			check(request);
-			return "user/loginform";
+			return "redirect:/user/loginform";
 		}else {
 			board.put("userNo", String.valueOf(loginUser.getNo()));
 			int result = boardService.writing(board);
 			if(result == 1) {
 				System.out.println("사용자 작성글 저장 성공");
-				return "board/list";
+				return "redirect:/board/list";
 			}else {
 				System.out.println("사용자 작성글 저장 실패");
-				return "board/list";
+				return "redirect:/board/list";
 			}
 			
 		}
@@ -98,7 +98,7 @@ public class BoardController {
 		if(loginUser==null) {
 			System.out.println("강제 modify 진입자 발생");
 			check(request);
-			return "user/loginform";
+			return "redirect:/user/loginform";
 		}else {
 			return "board/modify";
 		}
@@ -115,7 +115,7 @@ public class BoardController {
 		if(loginUser==null) {
 			System.out.println("강제 modifying 진입자 발생");
 			check(request);
-			return "user/loginform";
+			return "redirect:/user/loginform";
 		}else {
 			int result = boardService.modifying(board,loginUser);
 			if(result == 1) {
@@ -144,7 +144,7 @@ public class BoardController {
 		if(loginUser==null) {
 			System.out.println("강제 delete 진입자 발생");
 			check(request);
-			return "user/loginform";
+			return "redirect:/user/loginform";
 		}else {
 			int result = boardService.delete(bno,loginUser);
 			if(result == 1) {

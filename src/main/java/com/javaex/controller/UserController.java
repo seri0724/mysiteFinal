@@ -101,7 +101,7 @@ public class UserController {
 		UserVo loginUser = (UserVo) session.getAttribute("authUser");
 		if(loginUser==null) {
 			System.out.println("로그인 되지 않은 상태입니다.");
-			return "user/loginform";
+			return "redirect:/user/loginform";
 		}else {
 			map.put("no", String.valueOf(loginUser.getNo()));
 			System.out.println("DB 유저 정보 수정 시작");

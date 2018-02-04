@@ -19,7 +19,7 @@
 			<div id="content">
 				<div id="user">
 	
-					<form id="join-form" name="joinForm" method="get" action="${pageContext.request.contextPath}/user/modify">
+					<form id="modify-form" name="modifyform" method="post" action="${pageContext.request.contextPath}/user/modify">
 						
 						<label class="block-label" for="name">이름</label>
 						<input id="name" name="name" type="text" value="${sessionScope.authUser.name }" />

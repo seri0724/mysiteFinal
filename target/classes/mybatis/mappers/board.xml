@@ -156,7 +156,7 @@
 							 u.name
 					  from users u, board b
 					  where u.no = b.user_no
-							and (b.title like #{keyWord} or b.content like #{keWword})
+							and (b.title like #{keyWord} or b.content like #{keyWord})
 					  order by reg_date desc, no desc))
 			 where rn>#{boardMinNum} and rn<=#{boardMaxNum}
 		 ]]>

@@ -51,15 +51,13 @@ public class GuestBookVo {
 		this.content = content;
 	}
 
-	public String getDate() {
+	public String getRegDate() {
 		return regDate;
 	}
 
-	public void setDate(String date) {
-		this.regDate = date;
+	public void setRegDate(String regDate) {
+		this.regDate = regDate;
 	}
-
-
 
 	@Override
 	public String toString() {

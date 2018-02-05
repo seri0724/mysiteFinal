@@ -1,12 +1,17 @@
 package com.javaex.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.javaex.service.GuestBookService;
+import com.javaex.vo.GuestBookVo;
 
 @Controller
 @RequestMapping("/gb")
@@ -15,65 +20,50 @@ public class GuestBookController {
 	@Autowired
 	GuestBookService guestBookService;
 	
-	@RequestMapping("/d")
+	@RequestMapping(value = "/list" , method = RequestMethod.GET)
+	public String list(Model model) {
+		List<GuestBookVo> l = guestBookService.list();
+		model.addAttribute("l", l);
+		return "guestbook/list";
+	}
+	
+	@RequestMapping(value = "/joinform" , method = RequestMethod.GET)
 	public String joinform() {
-		return "guestbook/d";
+		return "guestbook/joinform";
 	}
 	
-	@RequestMapping("/a")
-	public String list() {
-		return "guestbook/a";
+	@RequestMapping(value = "/writing" , method = RequestMethod.POST)
+	public String writing(@RequestParam Map<String,String> guestBook ) {
+		int result = guestBookService.writing(guestBook);
+		if(result == 1) {
+			System.out.println("방명록 작성 성공");
+		}else {
+			System.out.println("방명록 작성 실패");
+		}
+		return "redirect:/gb/list";
 	}
 	
-//	public static void main(String[] args) {
-//		String actionName = request.getParameter("a");
-//		
-//		if(actionName.equals("add")) {
-//			System.out.println("add 진입");
-//			
-//			String name = request.getParameter("name");
-//			String password = request.getParameter("password");
-//			String content = request.getParameter("content");
-//			
-//			GuestBookDAO dao = new GuestBookDAO();
-//			GuestBookVO vo = new GuestBookVO();
-//			vo.setName(name);
-//			vo.setPassword(password);
-//			vo.setContent(content);
-//			dao.insertGuestBook(vo);
-//			
-//			WebUtil.redirect(request, response, "/mysite/gb?a=list");
-//		}else if(actionName.equals("delete")) {
-//			int no = Integer.parseInt(request.getParameter("no"));
-//			String password = request.getParameter("password");
-//			GuestBookDAO dao = new GuestBookDAO();
-//			int result = dao.deleteGuestBook(no, password);
-//			if(result == 1) {
-//				WebUtil.redirect(request, response, "/mysite/gb?a=list");
-//			}else {
-//				WebUtil.redirect(request,response,"/mysite/gb?a=deletefail");
-//			}
-//		}
-//		
-//		if(actionName.equals("list")){
-//			System.out.println("list 진입");
-//			GuestBookDAO dao = new GuestBookDAO();
-//			List<GuestBookVO> l = dao.selectAllGuestBook();
-//			request.setAttribute("l", l);
-//			WebUtil.forward(request, response, "/WEB-INF/views/guestbook/list.jsp");
-//		}else if(actionName.equals("deleteform")) {
-//			System.out.println("deleteform 진입");
-//			WebUtil.forward(request, response, "/WEB-INF/views/guestbook/deleteform.jsp");
-//		}else if(actionName.equals("deletefail")) {
-//			System.out.println("deletefail 진입");
-//			WebUtil.forward(request, response, "/WEB-INF/views/guestbook/deletefail.html");
-//		}else {
-//			System.out.println("잘못된 접근입니다.");
-//		}
-//			
-//			
-//			
-//	}
+	@RequestMapping(value = "/deleteform" , method = RequestMethod.GET)
+	public String deleteform() {
+		return "guestbook/deleteform";
+	}
+	
+	@RequestMapping(value = "/delete" , method = RequestMethod.POST)
+	public String deleteform(@RequestParam Map<String,String> guestBook) {
+		int result = guestBookService.delete(guestBook);
+		if(result == 1) {
+			System.out.println("비밀번호 일치 : 방명록 삭제 성공");
+			return "redirect:/gb/list";
+		}else {
+			System.out.println("비밀번호 불일치 : 방명록 삭제 실패");
+			return "redirect:/gb/deletefail";
+		}
 		
-		
+	}
+	
+	@RequestMapping(value = "/deletefail" , method = RequestMethod.GET)
+	public String deletefail() {
+		return "guestbook/deletefail";
+	}
+			
 }

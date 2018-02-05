@@ -1,14 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!-- sqlSession 이 찾아올 수 있는 첫번째 주소 이름 -->
 <mapper namespace="guestbook">
-
 	
-	<select id="selectPageList" parameterType="Map" resultType="BoardVO">
+	<select id="list" resultType="GuestBookVo">
 		<![CDATA[
-
+			select no,
+				   name,
+				   content,
+				   reg_date regDate
+			from guestbook
+			order by reg_date desc, no desc
 		]]>	
 	</select>
+	
+	<insert id="insert" parameterType="Map">
+		<![CDATA[
+			insert into guestbook
+			values(seq_guestbook_no.nextval, #{name} , #{password} , #{content} ,  sysdate)
+		]]>
+	</insert>
+	
+	<delete id="delete" parameterType="Map">
+		<![CDATA[
+			delete from guestbook where no = #{no} and password = #{password}
+		]]>
+	</delete>
 
 </mapper>

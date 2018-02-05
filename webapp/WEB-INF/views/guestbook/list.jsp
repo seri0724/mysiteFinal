@@ -18,8 +18,7 @@
 			<div id="content">
 				<div id="guestbook">
 					
-					<form action="/mysite/gb" method="post">
-					<input type="hidden" name="a" value="add">
+					<form action="${pageContext.request.contextPath}/gb/writing" method="post">
 						
 						<table>
 							<tr>
@@ -43,8 +42,8 @@
 									<tr>
 										<td>[${gvo.no }]</td>
 										<td>${gvo.name }</td>
-										<td>${gvo.date }</td>
-										<td><a href="${pageContext.request.contextPath}/gb/deleteform&no=${gvo.no }">삭제</a></td>
+										<td>${gvo.regDate }</td>
+										<td><a href="${pageContext.request.contextPath}/gb/deleteform?no=${gvo.no }">삭제</a></td>
 									</tr>
 									<tr>
 										<td colspan=4>

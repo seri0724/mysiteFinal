@@ -8,6 +8,6 @@
 </head>
 <body>
 	잘못된 비밀번호입니다 <br>
-	<a href="${pageContext.request.contextPath}/gb?a=list">메인으로 돌아가기</a>
+	<a href="${pageContext.request.contextPath}/gb/list">메인으로 돌아가기</a>
 </body>
 </html>

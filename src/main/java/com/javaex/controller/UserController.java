@@ -80,7 +80,7 @@ public class UserController {
 		}
 	}
 	
-	@RequestMapping(value = "/modifyform" , method = RequestMethod.POST)
+	@RequestMapping(value = "/modifyform" , method = RequestMethod.GET)
 	public String modifyform(HttpSession session, Model model) {
 		System.out.println("modifyform 진입");
 		UserVo loginUser = (UserVo) session.getAttribute("authUser");

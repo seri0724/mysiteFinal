@@ -167,8 +167,8 @@ public class BoardController {
 	
 	//강제로 비정상적인 접근이 발생했을때 해당 ip 확인
 	private void check(HttpServletRequest request) {
-		System.out.println("페이지를 요청한 ip 주소 : " + request.getLocalAddr());
+		System.out.println("페이지를 요청한 ip 주소 (Host) : " + request.getRemoteHost());
+		System.out.println("페이지를 요청한 ip 주소 (Addr) : " + request.getRemoteAddr());
 		System.out.println("접근 포트 : " + request.getLocalPort());
-		System.out.println("ip 주소 지역 위치 : " + request.getLocale());
 	}
 }

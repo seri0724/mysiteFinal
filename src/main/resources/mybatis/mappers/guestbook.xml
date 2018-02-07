@@ -14,10 +14,34 @@
 		]]>	
 	</select>
 	
+	<select id="listAjax" parameterType="Map" resultType="GuestBookVo">
+		<![CDATA[
+			select rn
+				   no,
+				   name,
+				   content,
+				   regDate
+			from
+				(select rownum rn,
+					   no,
+					   name,
+					   content,
+					   regDate
+				from
+					(select no,
+						   name,
+						   content,
+						   reg_date regDate
+					from guestbook
+					order by reg_date desc, no desc))
+			where rn>#{min} and rn<=#{max}
+		]]>	
+	</select>
+	
 	<insert id="insert" parameterType="Map">
 		<![CDATA[
 			insert into guestbook
-			values(seq_guestbook_no.nextval, #{name} , #{password} , #{content} ,  sysdate)
+			values(seq_guestbook_no.nextval, #{name} , #{password} , #{content} , sysdate)
 		]]>
 	</insert>
 	

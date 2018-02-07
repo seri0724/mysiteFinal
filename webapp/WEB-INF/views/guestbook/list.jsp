@@ -34,9 +34,11 @@
 						</table>
 					</form>
 					
+					
+					<ul>
 					<!-- jstl 사용 -->
 					<c:forEach items="${requestScope.l }" var="gvo">
-						<ul>
+				
 							<li>
 								<table>
 									<tr>
@@ -53,8 +55,10 @@
 								</table>
 								<br>
 							</li>
-						</ul>
+						
 					</c:forEach>
+					</ul>
+					
 					
 				</div><!-- /guestbook -->
 			</div><!-- /content -->

@@ -19,6 +19,10 @@ public class GuestBookDao {
 		return sqlSession.selectList("guestbook.list");
 	}
 	
+	public List<GuestBookVo> guestBookListAjax(Map<String,String> MinMax) {
+		return sqlSession.selectList("guestbook.listAjax", MinMax);
+	}
+	
 	public int guestBookInsert(Map<String,String> guestBook) {
 		return sqlSession.insert("guestbook.insert", guestBook);
 	}
@@ -26,5 +30,5 @@ public class GuestBookDao {
 	public int guestBookDelete(Map<String,String> guestBook) {
 		return sqlSession.delete("guestbook.delete", guestBook);
 	}
-	
+
 }

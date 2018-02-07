@@ -27,6 +27,10 @@ public class UserDao {
 		return sqlSession.selectOne("user.selectByNo", no);
 	}
 	
+	public UserVo userEmailCheck(String email) {
+		return sqlSession.selectOne("user.emailCheck", email);
+	}
+	
 	public int userUpdate(Map<String,String> map) {
 		return sqlSession.update("user.update", map);
 	}

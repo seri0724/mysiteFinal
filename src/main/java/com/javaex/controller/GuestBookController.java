@@ -27,6 +27,12 @@ public class GuestBookController {
 		return "guestbook/list";
 	}
 	
+	//ajax 용 그냥 페이지 
+	@RequestMapping(value = "/listajax" , method = RequestMethod.GET)
+	public String listajax() {
+		return "guestbook/listajax";
+	}
+	
 	@RequestMapping(value = "/joinform" , method = RequestMethod.GET)
 	public String joinform() {
 		return "guestbook/joinform";

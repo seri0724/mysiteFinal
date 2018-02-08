@@ -36,10 +36,10 @@
 					
 					
 					<ul>
+						<li>
 					<!-- jstl 사용 -->
-					<c:forEach items="${requestScope.l }" var="gvo">
+							<c:forEach items="${requestScope.l }" var="gvo">
 				
-							<li>
 								<table>
 									<tr>
 										<td>[${gvo.no }]</td>
@@ -54,9 +54,9 @@
 									</tr>
 								</table>
 								<br>
-							</li>
-						
-					</c:forEach>
+							
+							</c:forEach>
+						</li>
 					</ul>
 					
 					

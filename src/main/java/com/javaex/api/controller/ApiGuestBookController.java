@@ -21,25 +21,25 @@ public class ApiGuestBookController {
 	GuestBookService guestBookService;
 
 	@ResponseBody
-	@RequestMapping(value="/gb/api/addlistajax", method = RequestMethod.POST)
-	public List<GuestBookVo> addlistajax(@RequestBody Map<String,String> MinMax) {
-		List<GuestBookVo> l = guestBookService.listAjax(MinMax);
-		System.out.println(MinMax.get("min") + " " + MinMax.get("max"));
+	@RequestMapping(value="/gb/api/fetchlistajax", method = RequestMethod.POST)
+	public List<GuestBookVo> fetchlistajax(@RequestParam Map<String,String> addSizeAndNo) {
+		List<GuestBookVo> l = guestBookService.listAjax(addSizeAndNo);
+		System.out.println(addSizeAndNo.get("addSize") + " " + addSizeAndNo.get("no"));
 		return l;
 	}
 	
-	@RequestMapping(value = "/gb/api/writingajax" , method = RequestMethod.POST)
-	public void writingajax(@RequestParam Map<String,String> guestBook) {
-		int result = guestBookService.writing(guestBook);
-		if(result == 1) {
-			System.out.println("방명록 작성 성공");
-		}else {
-			System.out.println("방명록 작성 실패");
-		}
+	@RequestMapping(value = "/gb/api/gbwritingajax" , method = RequestMethod.POST)
+	public Map<String, String> gbwritingajax(@RequestParam Map<String,Object> gvoAndNo) {
+		System.out.println(gvoAndNo.get("gvo"));
+		System.out.println(gvoAndNo.get("no"));
+		
+		
+//		Map<String, String> gvo = guestBookService.writingAjax(gvo);
+		return null;
 	}
 	
-	@RequestMapping(value = "/gb/api/deleteajax" , method = RequestMethod.POST)
-	public String deleteform(@RequestParam Map<String,String> guestBook) {
+	@RequestMapping(value = "/gb/api/gbdeletingajax" , method = RequestMethod.POST)
+	public String gbdeletingajax(@RequestParam Map<String,String> guestBook) {
 		int result = guestBookService.delete(guestBook);
 		if(result == 1) {
 			System.out.println("비밀번호 일치 : 방명록 삭제 성공");

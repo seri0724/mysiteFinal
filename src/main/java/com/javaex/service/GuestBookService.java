@@ -19,8 +19,8 @@ public class GuestBookService {
 		return gbDao.guestBookList();
 	}
 	
-	public List<GuestBookVo> listAjax(Map<String,String> MinMax) {
-		return gbDao.guestBookListAjax(MinMax);
+	public List<GuestBookVo> listAjax(Map<String,String> addSizeAndNo) {
+		return gbDao.guestBookListAjax(addSizeAndNo);
 	}
 	
 	public int writing(Map<String, String> guestBook) {
@@ -29,6 +29,10 @@ public class GuestBookService {
 
 	public int delete(Map<String, String> guestBook) {
 		return gbDao.guestBookDelete(guestBook);
+	}
+
+	public Map<String, String> writingAjax(Map<String, String> guestBook) {
+		return gbDao.guestBookInsertAjax(guestBook);
 	}
 
 }

@@ -16,7 +16,7 @@
 	
 	<select id="listAjax" parameterType="Map" resultType="GuestBookVo">
 		<![CDATA[
-			select rn
+			select rn,
 				   no,
 				   name,
 				   content,
@@ -34,11 +34,21 @@
 						   reg_date regDate
 					from guestbook
 					order by reg_date desc, no desc))
-			where rn>#{min} and rn<=#{max}
+			where rn>#{no} and rn<=(#{no}+#{addSize})
 		]]>	
 	</select>
 	
 	<insert id="insert" parameterType="Map">
+		<![CDATA[
+			insert into guestbook
+			values(seq_guestbook_no.nextval, #{name} , #{password} , #{content} , sysdate)
+		]]>
+	</insert>
+	
+	<insert id="insertAjax" parameterType="Map" >
+		<selectKey keyProperty="no,regDate" resultType="String" order="BEFORE">
+			select seq_guestbook_no.nextval no, sysdate regDate from dual
+		</selectKey>
 		<![CDATA[
 			insert into guestbook
 			values(seq_guestbook_no.nextval, #{name} , #{password} , #{content} , sysdate)

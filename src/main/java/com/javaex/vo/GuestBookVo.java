@@ -19,6 +19,7 @@ public class GuestBookVo {
 		this.content = content;
 	}
 
+
 	public int getNo() {
 		return no;
 	}

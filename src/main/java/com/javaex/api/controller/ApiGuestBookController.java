@@ -20,34 +20,32 @@ public class ApiGuestBookController {
 	@Autowired
 	GuestBookService guestBookService;
 
+	//ResponseBody 어노테이션을 선언하면 리턴할때 body 에 실어서 담기로 정의 됨과 동시에 json 포맷타입으로 전환되어 리턴된다.
 	@ResponseBody
 	@RequestMapping(value="/gb/api/fetchlistajax", method = RequestMethod.POST)
 	public List<GuestBookVo> fetchlistajax(@RequestParam Map<String,String> addSizeAndNo) {
+		System.out.println("게시물 리스트 진입");
 		List<GuestBookVo> l = guestBookService.listAjax(addSizeAndNo);
-		System.out.println(addSizeAndNo.get("addSize") + " " + addSizeAndNo.get("no"));
+		System.out.println("addSize : " + addSizeAndNo.get("addSize") + " minNo : " + addSizeAndNo.get("minNo"));
 		return l;
 	}
 	
+	@ResponseBody
 	@RequestMapping(value = "/gb/api/gbwritingajax" , method = RequestMethod.POST)
-	public Map<String, String> gbwritingajax(@RequestParam Map<String,Object> gvoAndNo) {
-		System.out.println(gvoAndNo.get("gvo"));
-		System.out.println(gvoAndNo.get("no"));
-		
-		
-//		Map<String, String> gvo = guestBookService.writingAjax(gvo);
-		return null;
+	public List<GuestBookVo> gbwritingajax(@RequestBody Map<String,Object> gvoAndMaxNo) {
+		System.out.println("게시물 삽입 진입");
+		System.out.println("gvo : " + gvoAndMaxNo.get("gvo") + " maxNo : " + gvoAndMaxNo.get("maxNo"));
+		List<GuestBookVo> afterInsertList = guestBookService.gbwritingajax(gvoAndMaxNo);
+		return afterInsertList;
 	}
 	
+	@ResponseBody
 	@RequestMapping(value = "/gb/api/gbdeletingajax" , method = RequestMethod.POST)
-	public String gbdeletingajax(@RequestParam Map<String,String> guestBook) {
+	public int gbdeletingajax(@RequestParam Map<String,String> guestBook) {
+		System.out.println("게시물 삭제 진입");
 		int result = guestBookService.delete(guestBook);
-		if(result == 1) {
-			System.out.println("비밀번호 일치 : 방명록 삭제 성공");
-			return "redirect:/gb/list";
-		}else {
-			System.out.println("비밀번호 불일치 : 방명록 삭제 실패");
-			return "redirect:/gb/deletefail";
-		}
-		
+		return result;
 	}
+	
+	
 }

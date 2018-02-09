@@ -19,10 +19,6 @@ public class GuestBookDao {
 		return sqlSession.selectList("guestbook.list");
 	}
 	
-	public List<GuestBookVo> guestBookListAjax(Map<String,String> addSizeAndNo) {
-		return sqlSession.selectList("guestbook.listAjax", addSizeAndNo);
-	}
-	
 	public int guestBookInsert(Map<String,String> guestBook) {
 		return sqlSession.insert("guestbook.insert", guestBook);
 	}
@@ -30,10 +26,26 @@ public class GuestBookDao {
 	public int guestBookDelete(Map<String,String> guestBook) {
 		return sqlSession.delete("guestbook.delete", guestBook);
 	}
-
-	public Map<String, String> guestBookInsertAjax(Map<String, String> guestBook) {
-		sqlSession.insert("guestbook.insertAjax", guestBook);
-		return guestBook;
+	
+	
+	//ajax
+	public List<GuestBookVo> guestBookListAjax(Map<String,String> addSizeAndNo) {
+		return sqlSession.selectList("guestbook.listAjax", addSizeAndNo);
+	}
+	
+	public Map<String, Object> guestBookInsertAjax(Map<String,Object> gvoAndMaxNo) {
+		int result = sqlSession.insert("guestbook.insertAjax", gvoAndMaxNo);
+		System.out.println("게시물 추가 처리 결과 : " + result);
+		if(result == 1) {
+			return gvoAndMaxNo;
+		}else {
+			return null;
+		}
+		
+	}
+	
+	public List<GuestBookVo> guestBookListAjaxAfterInsert(Map<String,Integer> maxNoAndInsertNo) {
+		return sqlSession.selectList("guestbook.listAjaxAfterInsert", maxNoAndInsertNo);
 	}
 
 }

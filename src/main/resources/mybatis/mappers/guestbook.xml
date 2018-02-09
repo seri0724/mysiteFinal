@@ -14,41 +14,7 @@
 		]]>	
 	</select>
 	
-	<select id="listAjax" parameterType="Map" resultType="GuestBookVo">
-		<![CDATA[
-			select rn,
-				   no,
-				   name,
-				   content,
-				   regDate
-			from
-				(select rownum rn,
-					   no,
-					   name,
-					   content,
-					   regDate
-				from
-					(select no,
-						   name,
-						   content,
-						   reg_date regDate
-					from guestbook
-					order by reg_date desc, no desc))
-			where rn>#{no} and rn<=(#{no}+#{addSize})
-		]]>	
-	</select>
-	
 	<insert id="insert" parameterType="Map">
-		<![CDATA[
-			insert into guestbook
-			values(seq_guestbook_no.nextval, #{name} , #{password} , #{content} , sysdate)
-		]]>
-	</insert>
-	
-	<insert id="insertAjax" parameterType="Map" >
-		<selectKey keyProperty="no,regDate" resultType="String" order="BEFORE">
-			select seq_guestbook_no.nextval no, sysdate regDate from dual
-		</selectKey>
 		<![CDATA[
 			insert into guestbook
 			values(seq_guestbook_no.nextval, #{name} , #{password} , #{content} , sysdate)
@@ -60,5 +26,89 @@
 			delete from guestbook where no = #{no} and password = #{password}
 		]]>
 	</delete>
+	
+	
+	
+	<!-- ajax -->
+	<select id="listAjax" parameterType="Map" resultType="GuestBookVo">
+		<choose>
+			<when test="minNo==0">
+				<![CDATA[
+					select rn,
+						   no,
+						   name,
+						   content,
+						   regDate
+					from
+						(select rownum rn,
+							   no,
+							   name,
+							   content,
+							   regDate
+						from
+							(select no,
+								   name,
+								   content,
+								   reg_date regDate
+							from guestbook
+							order by reg_date desc, no desc))
+					where rn>#{minNo} and rn<=(#{minNo}+#{addSize})
+				]]>	
+			</when>
+			<otherwise>
+				<![CDATA[
+					select rn,
+						   no,
+						   name,
+						   content,
+						   regDate
+					from
+						(select rownum rn,
+							   no,
+							   name,
+							   content,
+							   regDate
+						from
+							(select no,
+								   name,
+								   content,
+								   reg_date regDate
+							from guestbook
+							order by reg_date desc, no desc)
+						where no<#{minNo})
+					where rn<=#{addSize}
+				]]>	
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!-- 맵으로 객체를 담아왔을시에는 keyProperty 값을 구체화 해줘야 담아 주는거같다. 그냥 no 라고 했더니 계속 오류 발생 -->
+	<insert id="insertAjax" parameterType="Map" >
+		<selectKey keyProperty="gvo.no" resultType="int" order="BEFORE">
+			select seq_guestbook_no.nextval no from dual
+		</selectKey>
+		<![CDATA[
+			insert into guestbook
+			values(#{gvo.no}, #{gvo.name} , #{gvo.password} , #{gvo.content} , sysdate)
+		]]>
+	</insert>
+	
+	<select id="listAjaxAfterInsert" parameterType="Map" resultType="GuestBookVo">
+		<![CDATA[
+				select no,
+					   name,
+					   content,
+					   regDate
+				from
+					(select no,
+						   name,
+						   content,
+						   reg_date regDate
+					from guestbook
+					order by reg_date desc, no desc)
+				where no>#{maxNo} and no<=#{insertNo}
+				order by no 
+		]]>	
+	</select>
 
 </mapper>

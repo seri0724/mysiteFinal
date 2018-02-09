@@ -27,11 +27,11 @@
 						<!-- 삽입 테이블 -->
 						<table>
 							<tr>
-								<td>이름</td><td><input type="text" name="name" /></td>
-								<td>비밀번호</td><td><input type="password" name="password" /></td>
+								<td>이름</td><td><input type="text" class="text" name="name" /></td>
+								<td>비밀번호</td><td><input type="password" class="password" name="password" /></td>
 							</tr>
 							<tr>
-								<td colspan=4><textarea name="content" id="content"></textarea></td>
+								<td colspan=4><textarea id="content" class="content" name="content" ></textarea></td>
 							</tr>
 							<tr>
 								<td colspan=4 align=right><input id="addbtn" type="button" VALUE=" 확인 " /></td>
@@ -39,10 +39,8 @@
 						</table>
 						<!-- 삽입 테이블/ -->
 					
-						<ul>
-							<li id="gbtable">
-								
-							</li>
+						<ul id="gbtable">
+							
 						</ul>
 						
 						<input id="morebtn" type="button" name ="more" value="더 보기">
@@ -63,129 +61,186 @@
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 					<h4 class="modal-title">방명록삭제</h4>
 				</div>
-				<div class="modal-body">
-					<label>비밀번호</label>
-					<input type="password" name="modalPassword" id="modalPassword"><br>	
-					<input type="text" name="modalPassword" value="" id="modalNo"> <br>	
+				<div class="modal-body" align="center">
+					<table >
+						<tr>
+							<td align="right"><label>게시글 번호 : </label></td>
+							<td align="right"><input type="text" id="modalgbNo" value="" style="border-width: 0px;" readonly="readonly"></td>
+						</tr>
+						<tr>
+							<td align="right"><label>비밀번호 : </label></td>
+							<td align="right"><input type="password" id="modalPassword" name="modalPassword" ></td>
+						</tr>
+					</table>
+					
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
-					<button type="button" class="btn btn-danger" id="btn_del">삭제</button>
+					<button type="button" class="btn btn-danger" id="delbtn">삭제</button>
 				</div>
 			</div><!-- /.modal-content -->
 		</div><!-- /.modal-dialog -->
 	</div><!-- /.modal -->
-	
-	<input id="delbtn" type="button" value="삭제">
 
 </body>
 	<script type="text/javascript">
 		var addSize = 5;
-		var finalNo = 0;
-		var fetchUrl = {select : "/gb/api/fetchlistajax",
+		var minNo = 0;
+		var maxNo = 0;
+		var fetchUrl = {
+						 select : "/gb/api/fetchlistajax",
 						 write : "/gb/api/gbwritingajax",
 						 del : "/gb/api/gbdeletingajax"
 					   };
 		
+		//페이지 맨처음 로딩시
 		$(document).ready(function(){
-			fetchListAjax(addSize,finalNo);
+			fetchListAjax(fetchUrl.select,addSize,minNo);
 		});
 		
-		//게시물 추가
+		//패치 리스트
+		//1.최초에 기준을 잡을 게시물의 번호 값이 없기 때문에 임의 값 0 을 넘겨서 가장 최신글을 rownum을 사용해서 로드해온다
+		//2.받아온 리스트로 부터 게시물의 최저번호,최고 번호를 설정한다.
+		function fetchListAjax(stringUrl,addSize,sendMinNo){
+			$.ajax({
+				url : "${pageContext.request.contextPath}"+stringUrl,
+				type : "post",
+				
+				//parameter 로 담아 보냄
+				data : {addSize : addSize, minNo : sendMinNo},
+				
+				dataType : "json",
+				success : function(listajax){ /*성공시 처리해야될 코드 작성*/
+					if(listajax.length!=0){
+						minNo = listajax[listajax.length-1].no;
+						if(maxNo==0){//맨처음 한번 로드해올시에만 max값을 세팅하도록...
+							maxNo = listajax[0].no;
+						}
+						console.log("minNo : " + minNo);
+						console.log("maxNo : " + maxNo);
+						for(var i=0; i<listajax.length; i++){
+							render(listajax[i],"append");
+						}
+					}else{
+						console.log("게시물 더이상 존재 하지 않음");
+					}
+				},
+				
+				error : function(XHR, status, error) { /*실패시 처리해야될 코드 작성*/
+					console.error(status + " : " + error);
+				}
+			});
+		}
+		
+		$("#morebtn").on("click",function(){
+			fetchListAjax(fetchUrl.select,addSize,minNo);
+		});
+		
+		
 		//보낼때는 header,body 선택 가능
-		//json 사용시 : header
-		//json 미사용시 : body
+		//게시물 추가
+		//json 사용시 : body
+		//json 미사용시 : header
 		//현재 보여준 리스트의 마지막번호에서 사용자가 게시글을 작성하는동안 추가된 게시글까지 리스트를 최신화
 		$("#addbtn").on("click",function(){
 			var gvo = {
 				name : $("[name=name]").val(),
 				password : $("[name=password]").val(),
-				content : $("[name=content]").val()
+				content :$("[name=content]").val()
 			};
 			
+			if(gvo.name !="" && gvo.password!="" && gvo.content!=""){
+				$.ajax({
+					url : "${pageContext.request.contextPath}"+fetchUrl.write,
+					type : "post",
+					
+					contentType : "application/json", //json 형태로 바디에 담에 보내겠다고 타입 지정
+					data : JSON.stringify({gvo : gvo, maxNo : maxNo}),
+					
+					dataType : "json",
+					success : function(listajax){ /*성공시 처리해야될 코드 작성*/
+						if(listajax.length!=0){
+							maxNo = listajax[0].no;
+							for(var i=0; i<listajax.length; i++){
+								render(listajax[i],"prepend");
+							}
+						}else{
+							console.log("작성 게시물 추가 실패");
+						}
+					},
+					
+					error : function(XHR, status, error) { /*실패시 처리해야될 코드 작성*/
+						console.error(status + " : " + error);
+					}
+				});
+				$(".text").val("");
+				$(".password").val("");
+				$(".content").val("");
+				
+			}else{
+				alert("게시글 입력 정보를 빠짐없이 모두 기입해주십시오");
+			}
+				
+		});
+				
+		
+		//게시글 삭제 버튼
+		$("#gbtable").on("click",".modalopen" ,function(){
+			var no = $(this).data("no");
+			console.log(no);
+			$("#modalgbNo").val(no); //modal의 텍스트 필드에 넘버값 삽입
+			$("#del-pop").modal(); // modal 오픈
+		});
+		
+		
+		//modal 삭제 버튼을 이용한 실질적인 삭제
+		$("#delbtn").on("click", function(){
+			var no = $("#modalgbNo").val();
+			var password = $("#modalPassword").val();
 			$.ajax({
-				url : "${pageContext.request.contextPath}"+fetchUrl.write,
+				url : "${pageContext.request.contextPath}"+fetchUrl.del,
 				type : "post",
 				
-				data : {gvo : gvo, no : finalNo},  //왜인지 도무지 이유도 모르겠지만 finalNo 값에 음수를 넣으면 계속 콘솔에 타입 오류가 뜸 하지만 실행하는데 문제가 없이 실행됨
+				data : {no : no , password : password},
 				
 				dataType : "json",
-				success : function(listajax){ /*성공시 처리해야될 코드 작성*/
-					for(var i=0; i<addSize; i++){
-						render(listajax[i],type);
+				success : function(result){ /*성공시 처리해야될 코드 작성*/
+					if(result==1){
+						$("#gb"+no).remove();
+					}else{
+						console.log("작성 게시물 삭제 실패");
 					}
-					return listajax[0].no;
 				},
 				
 				error : function(XHR, status, error) { /*실패시 처리해야될 코드 작성*/
 					console.error(status + " : " + error);
 				}
 			});
-			
+			$("#modalgbNo").val("");
+			$("#modalPassword").val("");
+			$("#del-pop").modal("hide");
 			
 		});
-				
-		$("#morebtn").on("click",function(){
-			min += addSize;
-			max += addSize;
-			console.log(min);
-			console.log(max);
-			moreFetchList();
-		});
 		
-		$("#delbtn").on("click",function(){
-			$("#del-pop").modal();
-		});
-		
-		//1.처음에는 기준을 잡을 게시물의 번호 값이 없기 때문에 임의 값 -1 을 넘겨서 가장 최신글을 rownum을 사용해서 로드해온다
-		//2.기준잡을 번호 잡혔을때 
-		function fetchListAjax(addSize,finalNo){
-			fetchListExecute(fetchUrl.select,"append",addSize,finalNo);
-			
-		}
-		
-		//패치 리스트 실행
-		function fetchListExecute(stringUrl,type,addSize,finalNo){
-			$.ajax({
-				url : "${pageContext.request.contextPath}"+stringUrl,
-				type : "post",
-				/* contentType : "application/json", //json 형태로 바디에 담에 보내겠다고 타입 지정
-				data : JSON.stringify({addSize: addSize, no: finalNo}), */
-				
-				data : {addSize : addSize, noo : finalNo},
-				
-				dataType : "json",
-				success : function(listajax){ /*성공시 처리해야될 코드 작성*/
-					finalNo = listajax[0].no;
-					console.log(finalNo);
-					for(var i=0; i<addSize; i++){
-						render(listajax[i],type);
-					}
-				},
-				
-				error : function(XHR, status, error) { /*실패시 처리해야될 코드 작성*/
-					console.error(status + " : " + error);
-				}
-			});
-		}
 		
 		//패치 리스트 실행 결과 토대로 태그 추가
 		function render(gb,type){
 			var s = 
-					"<table>"+
-						"<tr>"+
-							"<td>["+gb.no+"]</td>"+
-							"<td>"+gb.name+"</td>"+
-							"<td>"+gb.regDate+"</td>"+
-							"<td><a href=${pageContext.request.contextPath}/gb/deleteform?no="+gb.no+">삭제</a></td>"+
-						"</tr>"+
-						"<tr>"+
-							"<td colspan=4>"+
-							gb.content+
-							"</td>"+
-						"</tr>"+
-					"</table>"+
-					"<br>";
+					"<li id='gb"+gb.no+"'>"+
+						"<table>"+
+							"<tr>"+
+								"<td>["+gb.no+"]</td>"+
+								"<td>"+gb.name+"</td>"+
+								"<td>"+gb.regDate+"</td>"+
+								"<td><input type='button' data-no='"+gb.no +"' class='modalopen' value='삭제'></td>"+
+							"</tr>"+
+							"<tr>"+
+								"<td colspan=4>"+
+								gb.content+
+								"</td>"+
+							"</tr>"+
+						"</table>"+
+					"</li>";
 			
 			if(type == "append"){
 				$("#gbtable").append(s);
